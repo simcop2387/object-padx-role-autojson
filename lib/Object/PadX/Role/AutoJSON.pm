@@ -18,6 +18,7 @@ Object::Pad::MOP::FieldAttr->register( "JSONBool", permit_hintkey => 'Object/Pad
 Object::Pad::MOP::FieldAttr->register( "JSONNum", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
 Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
 
+our $VERSION='1.0';
 
 
 use Data::Dumper;
