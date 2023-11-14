@@ -31,11 +31,15 @@ class TestObject5 :does(AutoJSON) {
 }
 
 class TestObject6 :does(AutoJSON) {
-  field $id :param :JSONBool = undef;
+  field $is_dead :param :JSONBool = undef;
 }
 
 class TestObject7 :does(AutoJSON) {
   field $name :param :JSONNull = undef;
+}
+
+class TestObject8 :does(AutoJSON) {
+  field $name :param :JSONKey(first_name) = undef;
 }
 
 my $obj = TestObject->new(name => "ralph");
@@ -78,19 +82,22 @@ my $force_bool_true = $json->encode($obj);
 
 is($force_bool_true, '{"is_dead":true}', "forced booleanation, true");
 
-$obj = testobject6->new(is_dead => 0);
+$obj = TestObject6->new(is_dead => 0);
 
 my $force_bool_false = $json->encode($obj);
 
 is($force_bool_false, '{"is_dead":false}', "forced booleanation, false");
 
-$obj = testobject7->new();
+$obj = TestObject7->new();
 
 my $allow_null = $json->encode($obj);
 
 is($allow_null, '{"name":null}', "allow nullification");
 
-use Data::Dumper;
-print Dumper $broken;
+$obj = TestObject8->new(name => "ralph");
+
+my $new_key = $json->encode($obj);
+
+is($new_key, '{"first_name":"ralph"}', "rename key for serialization");
 
 done_testing();
