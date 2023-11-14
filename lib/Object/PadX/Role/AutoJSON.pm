@@ -18,6 +18,7 @@ Object::Pad::MOP::FieldAttr->register( "JSONBool", permit_hintkey => 'Object/Pad
 Object::Pad::MOP::FieldAttr->register( "JSONNum", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
 Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
 
+# ABSTRACT: Role for Object::Pad that dynamically handles a TO_JSON serialization based on the MOP
 our $VERSION='1.0';
 
 
