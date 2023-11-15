@@ -13,37 +13,37 @@ class TestObject {
   field $name :param = undef;
 }
 
-class TestObject2 :does(AutoJSON) {
+class TestObject2 :does(Object::PadX::Role::AutoJSON) {
   field $name :param = undef;
 }
 
-class TestObject3 :does(AutoJSON) {
+class TestObject3 :does(Object::PadX::Role::AutoJSON) {
   field $name :param = undef;
   field $social_security_number :param :JSONExclude = undef;
 }
 
-class TestObject4 :does(AutoJSON) {
+class TestObject4 :does(Object::PadX::Role::AutoJSON) {
   field $id :param :JSONStr = undef;
 }
 
-class TestObject5 :does(AutoJSON) {
+class TestObject5 :does(Object::PadX::Role::AutoJSON) {
   field $id :param :JSONNum = undef;
 }
 
-class TestObject6 :does(AutoJSON) {
+class TestObject6 :does(Object::PadX::Role::AutoJSON) {
   field $is_dead :param :JSONBool = undef;
 }
 
-class TestObject7 :does(AutoJSON) {
+class TestObject7 :does(Object::PadX::Role::AutoJSON) {
   field $name :param :JSONNull = undef;
 }
 
-class TestObject8 :does(AutoJSON) {
+class TestObject8 :does(Object::PadX::Role::AutoJSON) {
   field $name :param :JSONKey(first_name) = undef;
 }
 
 my $obj = TestObject->new(name => "ralph");
-ok(defined $obj, "Non-AutoJSON object creation");
+ok(defined $obj, "Non-Object::PadX::Role::AutoJSON object creation");
 
 my $broken = $json->encode($obj);
 

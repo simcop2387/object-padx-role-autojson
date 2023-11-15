@@ -40,7 +40,7 @@ use Data::Dumper;
 
 sub import { $^H{'Object::PadX::Role::AutoJSON'}=1;}
 
-role AutoJSON {
+role Object::PadX::Role::AutoJSON {
   use Carp qw/croak/;
   use experimental 'for_list';
 
