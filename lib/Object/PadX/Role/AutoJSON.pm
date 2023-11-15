@@ -8,15 +8,29 @@ use Object::Pad::MOP::Field;
 use Object::Pad::MOP::Class;
 use Syntax::Operator::Equ;
 
-Object::Pad::MOP::FieldAttr->register( "JSONExclude", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
+# TODO replace these with the real thing as part of the func flags when Object::Pad finally exposes them
+my $_require_value = sub {
+  my ($field_meta, $value) = @_;
+
+  die "Missing required attribute value" unless defined $value;
+  return $value;
+};
+
+my $_disallow_value = sub {
+  my ($field_meta, $value) = @_;
+
+  die "Missing required attribute value" if defined $value;
+};
+
+Object::Pad::MOP::FieldAttr->register( "JSONExclude", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
 # Set a new name when going to JSON
-Object::Pad::MOP::FieldAttr->register( "JSONKey", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
+Object::Pad::MOP::FieldAttr->register( "JSONKey", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_require_value );
 # Allow this to get sent as null, rather than leaving it off
-Object::Pad::MOP::FieldAttr->register( "JSONNull", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
+Object::Pad::MOP::FieldAttr->register( "JSONNull", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
 # Force boolean or num or str
-Object::Pad::MOP::FieldAttr->register( "JSONBool", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
-Object::Pad::MOP::FieldAttr->register( "JSONNum", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
-Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object/PadX/Role/AutoJSON' );
+Object::Pad::MOP::FieldAttr->register( "JSONBool", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
+Object::Pad::MOP::FieldAttr->register( "JSONNum", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
+Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
 
 # ABSTRACT: Role for Object::Pad that dynamically handles a TO_JSON serialization based on the MOP
 our $VERSION='1.0';
@@ -24,7 +38,7 @@ our $VERSION='1.0';
 
 use Data::Dumper;
 
-sub import { $^H{'Object/PadX/Role/AutoJSON'}=1;}
+sub import { $^H{'Object::PadX::Role::AutoJSON'}=1;}
 
 role AutoJSON {
   use Carp qw/croak/;
