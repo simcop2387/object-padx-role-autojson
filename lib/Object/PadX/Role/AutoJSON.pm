@@ -35,16 +35,23 @@ Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object::Pad
 # ABSTRACT: Role for Object::Pad that dynamically handles a TO_JSON serialization based on the MOP
 our $VERSION='1.0';
 
+sub import {
+  my @imports = @_;
+  $^H{'Object::PadX::Role::AutoJSON'}=1;
 
-use Data::Dumper;
+  if (grep {$_ eq '-toplevel'} @imports) {
+    eval "use Object::Pad; use Object::PadX::Role::AutoJSON; role AutoJSON :does(Object::PadX::Role::AutoJSON) {};";
+    die $@ if $@;
+  }
+}
 
-sub import { $^H{'Object::PadX::Role::AutoJSON'}=1;}
-sub unimport { delete $^H{'Object::PadX::Role::AutoJSON'};}
+sub unimport { 
+  delete $^H{'Object::PadX::Role::AutoJSON'};
+
+  # Don't try to undo -toplevel, madness may ensue 
+}
 
 role Object::PadX::Role::AutoJSON {
-  use Carp qw/croak/;
-  use experimental 'for_list';
-
   method TO_JSON() {
     my $class = __CLASS__;
     my $classmeta = Object::Pad::MOP::Class->for_class($class);
