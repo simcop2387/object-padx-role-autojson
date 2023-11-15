@@ -39,6 +39,7 @@ our $VERSION='1.0';
 use Data::Dumper;
 
 sub import { $^H{'Object::PadX::Role::AutoJSON'}=1;}
+sub unimport { delete $^H{'Object::PadX::Role::AutoJSON'};}
 
 role Object::PadX::Role::AutoJSON {
   use Carp qw/croak/;
