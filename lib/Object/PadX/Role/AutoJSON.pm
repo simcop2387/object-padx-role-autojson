@@ -111,7 +111,7 @@ thus this module may fail to work at some point in the future due to an update. 
   use Object::PadX::Role::AutoJSON;
   use Cpanel::JSON::XS;
 
-  class Person :does(AutoJSON) {
+  class Person :does(Object::PadX::Role::AutoJSON) {
     field $internal_uuid :param :JSONStr :JSONKey(uuid);
 
     field $first_name :param;
@@ -152,6 +152,17 @@ This module creates an automatic serialization function named C<TO_JSON> on your
 of which is to automatically look up all fields in the object and give them out to be serialized by a JSON module.
 It also provides a series of attributes, C<:JSONExclude> and such, to allow you to do some basic customization of
 how the fields will be output, without affecting how the fields themselves work.
+
+=head2 IMPORTS
+
+  use Object::PadX::Role::AutoJSON '-toplevel';
+
+  class Foo :does(AutoJSON) {
+    ...
+  }
+
+This is the only import right now, it creates a top level namespace role AutoJSON for lazy people (like me).
+This is a bad idea, don't do it it pollutes this globally since there is no such thing as lexical role imports.
 
 =head2 ATTRIBUTES
 
