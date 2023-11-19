@@ -1,12 +1,14 @@
 package Object::PadX::Role::AutoJSON;
 
-use v5.38;
+use v5.26;
+
+use strict;
+use warnings;
 
 use Object::Pad ':experimental(custom_field_attr mop)';
 use Object::Pad::MOP::FieldAttr;
 use Object::Pad::MOP::Field;
 use Object::Pad::MOP::Class;
-use Syntax::Operator::Equ;
 
 # TODO replace these with the real thing as part of the func flags when Object::Pad finally exposes them
 my $_require_value = sub {
