@@ -37,7 +37,7 @@ Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object::Pad
 Object::Pad::MOP::FieldAttr->register( "JSONList", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_require_value );
 
 # ABSTRACT: Role for Object::Pad that dynamically handles a TO_JSON serialization based on the MOP
-our $VERSION = '1.2';
+our $VERSION = '1.3';
 
 sub import {
   my @imports = @_;
