@@ -34,6 +34,8 @@ Object::Pad::MOP::FieldAttr->register( "JSONBool", permit_hintkey => 'Object::Pa
 Object::Pad::MOP::FieldAttr->register( "JSONNum", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
 Object::Pad::MOP::FieldAttr->register( "JSONStr", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_disallow_value );
 
+Object::Pad::MOP::FieldAttr->register( "JSONList", permit_hintkey => 'Object::PadX::Role::AutoJSON', apply => $_require_value );
+
 # ABSTRACT: Role for Object::Pad that dynamically handles a TO_JSON serialization based on the MOP
 our $VERSION = '1.2';
 
@@ -54,6 +56,28 @@ sub unimport {
 }
 
 role Object::PadX::Role::AutoJSON {
+  use feature 'signatures';
+
+  my $_to_str = sub ($x) {
+    return "".$x;
+  };
+
+  my $_to_num = sub ($x) {
+    return 0+$x;
+  };
+
+  my $_to_bool = sub ($x) {
+    return !!$x ? \1 : \0;
+  };
+
+  my $_to_list = sub ($ref, $type) {
+    my $sub = $type eq 'JSONNum' ? $_to_num :
+              $type eq 'JSONStr' ? $_to_str :
+              $type eq 'JSONBool' ? $_to_bool :
+                                    sub {die "Wrong type $type in json conversion"};
+    return [map {$sub->($_)} $ref->@*]
+  };
+
   method TO_JSON() {
     my $class = __CLASS__;
     my $classmeta = Object::Pad::MOP::Class->for_class($class);
@@ -80,13 +104,16 @@ role Object::PadX::Role::AutoJSON {
       $key = $metafield->get_attribute_value("JSONKey") if $metafield->has_attribute("JSONKey");
 
       if ($metafield->has_attribute('JSONBool')) {
-        $value = !!$value ? \1 : \0;
+        $value = $_to_bool->($value);
       } elsif ($metafield->has_attribute('JSONNum')) {
         # Force numification
-        $value = 0+$value;
+        $value = $_to_num->($value);
       } elsif ($metafield->has_attribute('JSONStr')) {
         # Force stringification
-        $value = "".$value;
+        $value = $_to_str->($value);
+      } elsif ($metafield->has_attribute('JSONList')) {
+        my $type = $metafield->get_attribute_value('JSONList');
+        $value = $_to_list->($value, $type);
       }
 
       $json_out{$key} = $value;
@@ -200,6 +227,11 @@ came as a string and perl wouldn't care but JSON does.
 
 This attribute forces the value to be re-interpreted as a string value, regardless of how perl sees it.  That way numbers, or other value types that were present will
 be properly stringified, such as nested objects that override stringification.
+
+=item * :JSONList(type)
+
+This attribute forces the list in the field to have all of it's elements processed as C<type>.  Where C<type> is one of C<JSONNum>, C<JSONStr>, or C<JSONBool>.  See above for any
+notes about each type, they match the attributes
 
 =back
 

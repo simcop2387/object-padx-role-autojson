@@ -9,7 +9,7 @@ use Cpanel::JSON::XS qw//;
 my $json = Cpanel::JSON::XS->new()->convert_blessed(1);
 
 class TestObject2 :does(AutoJSON) {
-  field $vector :JSONList(JSONNum) = undef;
+  field $vector :JSONList(JSONNum) :param = undef;
 }
 
 my $obj = TestObject2->new(vector => ["1",2,"3.0e2",4]);
